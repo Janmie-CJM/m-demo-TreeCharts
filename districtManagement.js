@@ -586,7 +586,7 @@ export const districtMockRes3 = [
   'Attack is the best form of defense.',
 ]
 
-aaa = {
+const aaa = {
   text: '💬',
   children: [
     {
