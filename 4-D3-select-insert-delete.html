@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4-D3-select-insert-delete</title>
+    <script src="./d3.min.js"></script>
+  </head>
+  <body>
+    <!-- 4-1 选择器——select-selectAll -->
+    <!-- 
+      d3.selectAll() ；选择的是所有匹配到的元素；
+　　　 d3.select(‘.calss’)、d3.select(‘#id’)、d3.select(‘div’)、d3.select(‘[name="zh"]’) 等 都是选择匹配到的第一个元素
+     -->
+    <section>
+      <div id="first">
+        <h3>第一个</h3>
+        <h3>第二个</h3>
+        <h3>第三个</h3>
+        <h3>第四个</h3>
+        <h3>第五个</h3>
+      </div>
+      <script>
+        var h3 = d3.select('#first').selectAll('h3')
+        h3.datum('我把内容改了看看').text(function (d, i) {
+          return d
+        })
+        console.log(h3)
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 
+      元素操作
+    -->
+    <!-- 4-2-1 修改元素内容 -->
+    <!-- 
+      selection.text([value]);
+    　selection.html([value]);
+    -->
+    <section>
+      <div id="second">
+        <h3>第一个</h3>
+        <h3>第二个</h3>
+        <h3>第三个</h3>
+        <h3>第四个</h3>
+        <h3>第五个</h3>
+      </div>
+      <script>
+        var h3 = d3.select('#second').selectAll('h3')
+        var text = h3.datum('我把内容改了看看').text()
+        var html = h3.datum('我把内容改了看看').html()
+        console.log(text)
+        console.log(html)
+        h3.datum('我把内容改了看看').text(function (d, i) {
+          return '<p>' + d + '</p>'
+        })
+        h3.datum('我把内容改了看看').html(function (d, i) {
+          return '<p>' + d + '</p>'
+        })
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 4-2-2 修改元素属性值 -->
+    <!-- 
+      selection.attr(name[, value]);
+　　  selection.property(name[, value]);
+      selection.style(name[, value[, priority]]);
+     -->
+    <section>
+      <div id="third">
+        <h3>第一个</h3>
+        <p title="23℃">第二个</p>
+      </div>
+      <script>
+        var h3 = d3.select('#third').selectAll('h3')
+        var p = d3.select('#third').selectAll('p')
+        h3.attr('title', '我是一个h3标签') //页面中鼠标滑过 显示 '我是一个h3标签'
+        console.log(p.attr('title')) //控制台输出 23℃
+        h3.style('font-size', '36px')
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 4-2-3 添加、移除元素 calss方法 -->
+    <!-- 
+      selection.classed(names[, value]);
+  　　names:class
+  　　value: true（添加calss）/  false（移除calss）
+     -->
+    <section>
+      <style>
+        .red {
+          color: red;
+        }
+      </style>
+      <div id="fourth">
+        <h3 class="red">第一个</h3>
+        <p title="23℃">第二个</p>
+      </div>
+      <script>
+        var h3 = d3.select('#fourth').selectAll('h3')
+        console.log(h3.classed('red')) //输出结果  true
+        // h3.classed('red', false) //这里移除 red
+        // console.log(h3.classed('red')) //输出结果  false
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 4-2-4 插入元素 -->
+    <!-- 
+      append()：在选择集尾部插入元素
+  　　insert()：在选择集前面插入元素
+     -->
+    <section>
+      <div id="five">
+        <p>原有的p标签</p>
+      </div>
+      <script>
+        var bd = d3.select('#five')
+        bd.append('div').text('我是在body标签内部最后append追加的div元素')
+        bd.insert('h3', 'p').text('我是在p标签前边insert插入的h3元素')
+      </script>
+    </section>
+
+    <hr>
+
+    <!-- 4-2-5 元素删除 -->
+    <!-- 
+      d3.select('p').remove();  删除匹配的第一个p元素。
+     -->
+    <section>
+      <div id="six">
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+      </div>
+      <script>
+        var bd = d3.select('#six')
+        bd.select('p').remove()
+      </script>
+    </section>
+  </body>
+</html>

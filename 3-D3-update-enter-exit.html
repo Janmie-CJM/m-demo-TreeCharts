@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3-D3-update-enter-exit</title>
+    <script src="./d3.min.js"></script>
+  </head>
+  <body>
+    <!-- 
+      Update 更新元素节点（绑定数据时默认进行的）
+      Enter 增加元素节点（这个的后面会用的很多）
+      Exit  删除元素节点
+     -->
+    <!-- 3-1 Update   Enter -->
+    <section>
+      <div id="first">
+        <h2>《执迷不悔》</h2>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+      </div>
+      <script>
+        var lyrics = [
+          '我不是你们想的如此完美',
+          '我承认有时也会辨不清真伪',
+          '并非我不愿意走出迷堆 只是这一次',
+          '这次是自己(而)不是谁',
+          '要我用谁的心去体会 真真切切地感受周围',
+          '就算痛苦 就算是泪 也是属于我的伤悲',
+          '我还能用谁的心去体会 真真切切地感受周围',
+          '就算疲倦 就算是累 也只能执迷(而)不悔',
+        ]
+
+        var h3 = d3.select('#first').selectAll('h3')
+        // var updata = h3.data(lyrics)
+        // var enter = updata.enter()
+        // console.log(updata)
+        // console.log(enter)
+
+        // updata.text(function (v, i) {
+        //   return v
+        // })
+        // var addH3 = enter.append('h3') //注意 这里是往enter中插入h3
+        // console.log(enter)
+        // addH3.text(function (v, i) {
+        //   //给新添加的h3标签 绑定数据
+        //   return v
+        // })
+        h3.data(lyrics).text(function (d, i) {
+          return d
+        })
+        h3.data(lyrics)
+          .enter()
+          .append('h3')
+          .text(function (d, i) {
+            return d
+          })
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 3-2 Update   Exit -->
+    <section>
+      <div id="second">
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+        <h3>这是一个h3标签</h3>
+      </div>
+      <script>
+        var lyrics = ['我不是你们想的如此完美', '我承认有时也会辨不清真伪']
+
+        var h3 = d3.select('#second').selectAll('h3')
+        // var updata = h3.data(lyrics)
+        // var exit = updata.exit()
+        // console.log(updata)
+        // console.log(exit)
+        // updata.text(function (v, i) {
+        //   return v
+        // })
+        // exit.text(function (v, i) {
+        //   return '我不删了，我就留着'
+        // })
+        h3.data(lyrics).text(function (v, i) {
+          return v
+        })
+        h3.data(lyrics).exit().remove()
+        // .text(function (v, i) {
+        //   return v
+        // })
+      </script>
+    </section>
+  </body>
+</html>

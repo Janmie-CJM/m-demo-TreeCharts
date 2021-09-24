@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2-D3-select-selectAll-data-datum</title>
+    <script src="./d3.min.js"></script>
+  </head>
+  <body>
+    <!-- 2-1 选择器——select-selectAll -->
+    <section>
+      <div id="first">
+        <h3></h3>
+        <h4 id="h4"></h4>
+        <h3 title="author"></h3>
+        <h3 class="date"></h3>
+      </div>
+      <script>
+        var h3 = d3.select('#first').selectAll('h3')
+        var h4 = d3.select('h4')
+        var author = d3.select("[title='author']")
+        var date = d3.select('.date')
+        h3.text('日照香炉生紫烟')
+        h4.text('遥看瀑布挂前川')
+        author.text('李白')
+        date.text('2020-3-26')
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 
+      D3 中是通过以下两个函数来绑定数据的：
+  　　datum()：绑定一个数据到选择集上
+  　　data()：绑定一个数组到选择集上，数组的各项值分别与选择集的各元素绑定
+    -->
+    <!-- 2-2-1 数据绑定-datum -->
+    <section>
+      <div id="second">
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+      </div>
+      <script>
+        var h3 = d3.select('#second').selectAll('h3')
+        h3.datum('我是一只小小小小鸟').text(function (v, i) {
+          return '我是第' + i + '个h3标签，内容是：' + v
+        })
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 2-2-2 数据绑定-data -->
+    <section>
+      <div id="third">
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+      </div>
+      <script>
+        var lyrics = [
+          '我是一只小小小小鸟',
+          '想要飞呀飞却飞也飞不高',
+          '我寻寻觅觅寻寻觅觅一个温暖的怀抱',
+          '这样的要求算不算太高',
+        ]
+        var h3 = d3.select('#third').selectAll('h3')
+        h3.data(lyrics).text(function (v, i) {
+          return '我是第' + i + '个h3标签，内容是：' + v
+        })
+      </script>
+    </section>
+
+    <hr />
+
+    <!-- 2-2-2 数据绑定-data-h3.data() 方法的例子中 直接绑定一个字符串  那么运行结果就会有点出乎意料 -->
+    <section>
+      <div id="fourth">
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+        <h3></h3>
+      </div>
+      <script>
+        var h3 = d3.select('#fourth').selectAll('h3')
+        h3.data('我是一只小小小小鸟').text(function (v, i) {
+          return '我是第' + i + '个h3标签，内容是：' + v
+        })
+      </script>
+    </section>
+
+    <hr>
+
+    <!-- 2-2-2 数据绑定-data-h3.data() -->
+    <section>
+      <div id="five"></div>
+      <script>
+        var h3 = d3
+          .select('#five')
+          .selectAll('h3')
+          .data(() => {
+            let arr
+            let str = '我是一只小小小小鸟'
+            arr = str.split('')
+            return arr
+          })
+          .enter()
+          .append('h3')
+          .text(function (v, i) {
+            return '我是第' + i + '个h3标签，内容是：' + v
+          })
+      </script>
+    </section>
+  </body>
+</html>
