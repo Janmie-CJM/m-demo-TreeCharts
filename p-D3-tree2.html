@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>p-D3-tree2</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- <script src="./d3.min.js"></script> -->
+    <style>
+      .node {
+        font: 12px sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="1200" height="500"></svg>
+  </body>
+
+  <script>
+    // 处理数据
+    function processingData(data) {
+        function populate(tree, array) {
+          if (array.length === 0) {
+            return
+          }
+
+          let name = array[0].name
+          let node = tree['children'].find((t) => t.name === name)
+
+          if (!node) {
+            node = {
+              name: name,
+              children: [],
+            }
+            tree['children'].push(node)
+          }
+
+          populate(node, array.slice(1))
+
+          return tree
+        }
+
+        // 判断对象是否为数组
+        let condition
+        condition = data instanceof Array // 1 - obj instanceof Array
+        // condition = Array.prototype.isPrototypeOf(data)  // 2 - Array.prototype.isPrototypeOf(obj)
+        // condition = Array.isArray(data)  // 3 - Array.isArray(obj)
+        // condition = Object.prototype.toString.call(data)  // 4 - Object.prototype.toString.call(obj)
+
+        let inputList = []
+        if (!condition) {
+          inputList[0] = data
+        } else {
+          inputList = data
+        }
+
+        if (inputList.length == 0) {
+          return
+        } else if (inputList.length == 1) {
+          var outputList = [{ name: inputList[0].name, children: [] }] // 一级
+          if (inputList[0].children) {
+            for (var i = 0; i < inputList[0].children.length; i++) {
+              outputList[0].children[i] = { name: inputList[0].children[i].name, children: [] } // 二级
+              let root = outputList[0].children[i]
+              let array = inputList[0].children[i].children
+              outputList[0].children[i] = populate(root, array)
+            }
+          }
+          console.log('outputList', outputList)
+          return outputList[0]
+        } else {
+          return
+        }
+      }
+
+    //数据
+    var data = {
+      name: '中国',
+      children: [
+        {
+          name: '浙江',
+          children: [
+            { name: '杭州', value: 100 },
+            { name: '宁波', value: 100 },
+            { name: '温州', value: 100 },
+            { name: '绍兴', value: 100 },
+          ],
+        },
+        {
+          name: '广西',
+          children: [
+            { name: '桂林', value: 100 },
+            { name: '南宁', value: 100 },
+            { name: '柳州', value: 100 },
+            { name: '防城港', value: 100 },
+          ],
+        },
+        {
+          name: '黑龙江',
+          children: [
+            { name: '哈尔滨', value: 100 },
+            { name: '齐齐哈尔', value: 100 },
+            { name: '牡丹江', value: 100 },
+            { name: '大庆', value: 100 },
+          ],
+        },
+        {
+          name: '新疆',
+          children: [{ name: '乌鲁木齐' }, { name: '克拉玛依' }, { name: '吐鲁番' }, { name: '哈密' }],
+        },
+      ],
+    }
+
+    data = processingData(data)
+
+    var margin = 60
+    var svg = d3.select('svg')
+    var width = svg.attr('width')
+    var height = svg.attr('height')
+
+    var boxWidth = 65
+    var boxHeight = 40
+
+    //创建分组
+    var g = svg.append('g').attr('transform', 'translate(' + margin + ',' + margin + ')')
+
+    //创建一个层级布局
+    var hierarchyData = d3.hierarchy(data).sum(function (d, i) {
+      return d.value
+    })
+    //    返回的节点和每一个后代会被附加如下属性:
+    //        node.data - 关联的数据，由 constructor 指定.
+    //        node.depth - 当前节点的深度, 根节点为 0.
+    //        node.height - 当前节点的高度, 叶节点为 0.
+    //        node.parent - 当前节点的父节点, 根节点为 null.
+    //        node.children - 当前节点的孩子节点(如果有的话); 叶节点为 undefined.
+    //        node.value - 当前节点以及 descendants(后代节点) 的总计值; 可以通过 node.sum 和 node.count 计算.
+    console.log(hierarchyData)
+
+    //创建一个树状图
+    var tree = d3
+      .tree()
+      .size([width - 400, height - 200])
+      .separation(function (a, b) {
+        return (a.parent == b.parent ? 1 : 2) / a.depth //一种更适合于径向布局的变体，可以按比例缩小半径差距:
+      })
+
+    //初始化树状图数据
+    var treeData = tree(hierarchyData)
+    console.log(treeData) //这里的数据treeData与hierarchyData 相同
+
+    //获取边和节点
+    var nodes = treeData.descendants() //从当前节点开始返回其后代节点数组
+    var links = treeData.links() //返回当前节点所在子树的所有边
+    console.log(nodes)
+    console.log(links)
+
+    //创建贝塞尔曲线生成器
+    var link = d3
+      // .linkVertical() //创建一个新的水平的 link 生成器 d3.linkVertical  linkHorizontal
+      // .x(function (d) {
+      //   return d.x
+      // }) //生成的曲线在曲线的终点和起点处的切线是水平方向的
+      // .y(function (d) {
+      //   return d.y
+      // })
+    var link = d3.linkHorizontal() //创建一个新的水平的 link 生成器 d3.linkVertical  linkHorizontal
+        .x(function(d) { return d.y; })//生成的曲线在曲线的终点和起点处的切线是水平方向的
+        .y(function(d) { return d.x; });
+
+    // 折现路径
+    function elbow(d) {
+      let sourceX = d.source.x,
+        sourceY = d.source.y + boxHeight,
+        targetX = d.target.x,
+        targetY = d.target.y
+
+      return 'M' + sourceX + ',' + sourceY + 'V' + ((targetY - sourceY) / 2 + sourceY) + 'H' + targetX + 'V' + targetY
+    }
+
+    //绘制边
+    g.append('g')
+      .selectAll('path') // node.path - 返回从当前节点到指定目标节点的最短路径
+      .data(links)
+      .enter()
+      .append('path')
+      // .attr('d', function (d, i) {
+      //   var start = { x: d.source.x, y: d.source.y }
+      //   var end = { x: d.target.x, y: d.target.y }
+      //   return link({ source: start, target: end })
+      // })
+      .attr('d', elbow)
+      // .attr('d',link(data))
+      .attr('stroke', 'pink')
+      .attr('stroke-width', 1)
+      .attr('fill', 'none')
+
+    //创建节点与文字分组
+    var gs = g
+      .append('g')
+      .selectAll('.g')
+      .data(nodes)
+      .enter()
+      .append('g')
+      .attr('transform', function (d, i) {
+        return 'translate(' + d.x + ',' + d.y + ')'
+        // return 'translate('+ d.y +','+ d.x +')';
+      })
+
+    // //创建节点与文字分组
+    // var gs = g
+    //   .append('g')
+    //   .selectAll('.node')
+    //   .data(nodes)
+    //   .enter()
+    //   .append('g')
+    //   .attr('class', 'node')
+    //   .attr('strokeWidth', 100)
+    //   .attr('transform', function (d, i) {
+    //     return 'translate(' + d.x + ',' + d.y + ')'
+    //     // return 'translate('+ d.y +','+ d.x +')';
+    //   })
+
+    // 绘制文字和节点
+    gs.append('circle').attr('r', 10).attr('fill', 'blue').attr('stroke-width', 1).attr('stroke', 'pink')
+
+    // gs.append('text')
+    //   .attr('x', function (d, i) {
+    //     return d.children ? -60 : 10 //有子元素的话  当前节点的文字前移40
+    //   })
+    //   .attr('y', -5)
+    //   .attr('dy', 10)
+    //   .text(function (d, i) {
+    //     return d.data.name
+    //   })
+
+    // gs.append('rect')
+    //   .attr('y', 0)
+    //   .attr('x', function (d) {
+    //     return d.depth !== 2 ? -(boxWidth / 2) : -(boxHeight / 2)
+    //   })
+    //   .attr('width', function (d) {
+    //     return d.depth !== 2 ? boxWidth : boxHeight
+    //   })
+    //   .attr('height', function (d) {
+    //     return d.depth !== 2 ? boxHeight : boxWidth
+    //   })
+    //   // 矩形背景色以及边框颜色宽度
+    //   .attr('fill', '#fff')
+    //   .attr('stroke', 'steelblue')
+    //   .attr('strokeWidth', '1px')
+    //   .on('click', function (evt) {
+    //     console.log('this', this)
+    //     console.log(evt) // 显示所点击节点数据
+    //   })
+
+    gs.append('text')
+      .attr('y', function (d) {
+        return d.depth !== 2 ? boxHeight / 2 + 5 : 0
+      })
+      // .attr('rotate', function (d) { //显示竖直显示中文时rotate为0，英文-90
+      //     return 0;
+      // })
+      .attr('style', function (d) {
+        return d.depth !== 2 ? '' : 'writing-mode: tb;letter-spacing:0px'
+      })
+      .attr('text-anchor', function (d) {
+        return d.depth !== 2 ? 'middle' : 'start'
+      })
+      .text(function (d) {
+        return d.data.name
+      })
+  </script>
+</html>

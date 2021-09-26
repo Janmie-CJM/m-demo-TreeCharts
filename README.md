@@ -7,3 +7,4 @@
 ![3-1](https://github.com/Janmie-CJM/tree-charts-test/blob/main/pic/3-1.PNG)
 ![5-1](https://github.com/Janmie-CJM/tree-charts-test/blob/main/pic/5-1.PNG)
 ![13-1](https://github.com/Janmie-CJM/tree-charts-test/blob/main/pic/13-1.PNG)
+![0-2](https://github.com/Janmie-CJM/tree-charts-test/blob/main/pic/0-2.PNG)
